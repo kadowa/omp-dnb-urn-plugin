@@ -100,6 +100,8 @@ class URNSettingsForm extends Form {
 	function _getFormFields() {
 		return array(
 			'urnPrefix' => 'string',
+			'urnSuffix' => 'string',
+			'urnPublicationFormatSuffixPattern' => 'string',
 		);
 	}
 }

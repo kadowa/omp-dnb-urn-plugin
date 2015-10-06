@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @file plugins/pubIds/doi/URNPubIdPlugin.inc.php
+ * @file plugins/pubIds/urn/URNPubIdPlugin.inc.php
  *
  * Copyright (c) 2015 Heidelberg University
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class URNPubIdPlugin
- * @ingroup plugins_pubIds_doi
+ * @ingroup plugins_pubIds_urn
  *
  * @brief URN plugin class
  */
@@ -77,6 +77,57 @@ class URNPubIdPlugin extends PubIdPlugin {
 
 		return null;
 	}
+	
+	/**
+	 * @see PKPPlugin::manage()
+	 */
+	function manage($verb, $args, &$message, &$messageParams, &$pluginModalContent = null) {
+		$request = $this->getRequest();
+		$templateManager = TemplateManager::getManager($request);
+		$templateManager->register_function('plugin_url', array(&$this, 'smartyPluginUrl'));
+		if (!$this->getEnabled() && $verb != 'enable') return false;
+		switch ($verb) {
+			case 'enable':
+				$this->setEnabled(true);
+				$message = NOTIFICATION_TYPE_PLUGIN_ENABLED;
+				$messageParams = array('pluginName' => $this->getDisplayName());
+				return false;
+	
+			case 'disable':
+				$this->setEnabled(false);
+				$message = NOTIFICATION_TYPE_PLUGIN_DISABLED;
+				$messageParams = array('pluginName' => $this->getDisplayName());
+				return false;
+	
+			case 'settings':
+				$press = $request->getPress();
+	
+				$settingsFormName = $this->getSettingsFormName();
+				$settingsFormNameParts = explode('.', $settingsFormName);
+				$settingsFormClassName = array_pop($settingsFormNameParts);
+				$this->import($settingsFormName);
+				$form = new $settingsFormClassName($this, $press->getId());
+				if ($request->getUserVar('save')) {
+					$form->readInputData();
+					if ($form->validate()) {
+						$form->execute();
+						$message = NOTIFICATION_TYPE_SUCCESS;
+						$messageParams = array('contents' => __('plugins.pubIds.urn.manager.settings.urnSettingsUpdated'));
+						return false;
+					} else {
+						$pluginModalContent = $form->fetch($request);
+					}
+				} else {
+					$form->initData();
+					$pluginModalContent = $form->fetch($request);
+				}
+				return false;
+			default:
+				// Unknown management verb
+				assert(false);
+				return false;
+		}
+	}
 
 	//
 	// Implement template methods from PubIdPlugin.
@@ -85,7 +136,78 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @see PubIdPlugin::getPubId()
 	 */
 	function getPubId($pubObject, $preview = false) {
-		$urn = "";
+		// Determine the type of the publishing object.
+		$pubObjectType = $this->getPubObjectType($pubObject);
+
+		// Initialize variables for publication objects.
+		$publicationFormat = ($pubObjectType == 'PublicationFormat' ? $pubObject : null);
+		$monograph = ($pubObjectType == 'Monograph' ? $pubObject : null);
+
+		// Get the press id of the object.
+		if (in_array($pubObjectType, array('PublicationFormat', 'Monograph'))) {
+			$pressId = $pubObject->getContextId();
+		} else {
+			return null;
+		}
+
+		$press = $this->_getPress($pressId);
+		if (!$press) return null;
+		$pressId = $press->getId();
+
+		// If we already have an assigned URN, use it.
+		$storedURN = $pubObject->getStoredPubId('urn');
+		if ($storedURN) return $storedURN;
+		
+		// Retrieve the URN prefix.
+		$urnPrefix = $this->getSetting($pressId, 'urnPrefix');
+		if (empty($urnPrefix)) return null;
+
+		// Generate the URN suffix.
+		$urnSuffixGenerationStrategy = $this->getSetting($pressId, 'urnSuffix');
+
+		switch ($urnSuffixGenerationStrategy) {
+/* 			case 'customId':
+				$urnSuffix = $pubObject->getData('urnSuffix');
+				break;
+ */
+			case 'pattern':
+				$urnSuffix = $this->getSetting($pressId, "urn${pubObjectType}SuffixPattern");
+
+				// %p - press initials
+				$urnSuffix = String::regexp_replace('/%p/', String::strtolower($press->getPath()), $urnSuffix);
+
+				if ($publicationFormat) {
+					// %m - monograph id, %f - publication format id
+					$urnSuffix = String::regexp_replace('/%m/', $publicationFormat->getMonographId(), $urnSuffix);
+					$urnSuffix = String::regexp_replace('/%f/', $publicationFormat->getId(), $urnSuffix);
+				}
+				if ($monograph) {
+					// %m - monograph id
+					$urnSuffix = String::regexp_replace('/%m/', $monograph->getId(), $urnSuffix);
+				}
+
+				break;
+
+			default:
+				$urnSuffix = String::strtolower($press->getPath());
+
+				if ($publicationFormat) {
+					$urnSuffix .= '.' . $publicationFormat->getMonographId();
+ 					$urnSuffix .= '.' . $publicationFormat->getId();
+				}
+				if ($monograph) {
+					$urnSuffix .= '.' . $monograph->getId();
+				}
+		}
+		if (empty($urnSuffix)) return null;
+
+		// Join prefix and suffix.
+		$urn = $urnPrefix . $urnSuffix;
+
+		if (!$preview) {
+			// Save the generated URN.
+			$this->setStoredPubId($pubObject, $pubObjectType, $urn);
+		}
 
 		return $urn;
 	}
@@ -122,7 +244,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @see PubIdPlugin::getFormFieldNames()
 	 */
 	function getFormFieldNames() {
-		return array('urnPrefix');
+		return array('urnSuffix');
 	}
 
 	/**
@@ -136,20 +258,35 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @see PubIdPlugin::getPubIdMetadataFile()
 	 */
 	function getPubIdMetadataFile() {
-		return '';
+		return $this->getTemplatePath().'urnSuffixEdit.tpl';
 	}
-	
+
 	/**
 	 * @see PubIdPlugin::getSettingsFormName()
 	 */
 	function getSettingsFormName() {
-		return 'classes.form.URNSettingsForm';
+		return 'form.URNSettingsForm';
 	}
 
 	/**
 	 * @see PubIdPlugin::verifyData()
 	 */
 	function verifyData($fieldName, $fieldValue, &$pubObject, $pressId, &$errorMsg) {
+/* 		// Verify URN uniqueness.
+		assert($fieldName == 'urnSuffix');
+		if (empty($fieldValue)) return true;
+
+		// Construct the potential new URN with the posted suffix.
+		$urnPrefix = $this->getSetting($pressId, 'urnPrefix');
+		if (empty($urnPrefix)) return true;
+		$newUrn = $urnPrefix . '/' . $fieldValue;
+
+		if($this->checkDuplicate($newUrn, $pubObject, $pressId)) {
+			return true;
+		} else {
+			$errorMsg = __('plugins.pubIds.urn.editor.urnSuffixCustomIdentifierNotUnique');
+			return false;
+		} */
 		return True;
 	}
 
@@ -157,8 +294,10 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @see PubIdPlugin::validatePubId()
 	 */
 	function validatePubId($pubId) {
-		return True;
+		$urnParts = explode(':', $pubId, 2);
+		return count($urnParts) == 2 and substr($pubId, 0, 3) == "urn:";
 	}
+
 
 	//
 	// Private helper methods

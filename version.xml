@@ -2,7 +2,7 @@
 <!DOCTYPE version SYSTEM "../../../lib/pkp/dtd/pluginVersion.dtd">
 
 <!--
-  * plugins/pubIds/doi/version.xml
+  * plugins/pubIds/urn_dnb/version.xml
   *
   * Copyright (c) 2015 Heidelberg University
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
@@ -10,7 +10,7 @@
   * Plugin version information.
   -->
 <version>
-	<application>urn</application>
+	<application>urn_dnb</application>
 	<type>plugins.pubIds</type>
 	<release>1.0.0.0</release>
 	<date>2015-10-05</date>
