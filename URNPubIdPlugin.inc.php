@@ -155,8 +155,8 @@ class URNPubIdPlugin extends PubIdPlugin {
 		$pressId = $press->getId();
 
 		// If we already have an assigned URN, use it.
-		$storedURN = $pubObject->getStoredPubId('urn');
-		if ($storedURN) return $storedURN;
+		//$storedURN = $pubObject->getStoredPubId('urn');
+		//if ($storedURN) return $storedURN;
 		
 		// Retrieve the URN prefix.
 		$urnPrefix = $this->getSetting($pressId, 'urnPrefix');
@@ -209,7 +209,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 			$this->setStoredPubId($pubObject, $pubObjectType, $urn);
 		}
 
-		return $urn;
+		return $urn . $this->_calculateUrnCheckNo($urn);
 	}
 
 	/**
@@ -287,6 +287,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 			$errorMsg = __('plugins.pubIds.urn.editor.urnSuffixCustomIdentifierNotUnique');
 			return false;
 		} */
+		//TODO: check, if all chars in urnPrefix and Suffix are allowed (check at form level?)
 		return True;
 	}
 
@@ -323,6 +324,38 @@ class URNPubIdPlugin extends PubIdPlugin {
 		}
 
 		return $press;
+	}
+	
+
+	/**
+	 * Add URN check number (s. http://www.persistent-identifier.de/?link=316)
+	 * Adapted from code by Božana Bokan, Center for Digital Systems (CeDiS), Freie Universität Berlin
+	 */
+	function _calculateUrnCheckNo($urn) {
+		$urn = strtoupper($urn);
+	
+		// numeric values that contain a 0 remain unassigned (marked by ua), as well as a few others
+		$allowedChars = array('0', '1', '2', '3', '4', '5', '6', '7', '8', 'ua10', 'U',
+				'R', 'N', 'B', 'D', 'E', ':', 'A', 'C', 'ua20', 'F', 'G',
+				'H', 'I', 'J', 'L', 'M', 'O', 'P', 'ua30', 'Q', 'S', 'T',
+				'V', 'W', 'X', 'Y', 'Z', '-', 'ua40', '9', 'K', '_', 'ua44', '/', 
+				'ua46', '.', 'ua48', '+');
+
+		$charMap = array_combine($allowedChars, range(1, 49));;
+		
+		$numUrn = "";
+		for ($i = 0; $i < strlen($urn); $i++) {
+			$numUrn .= $charMap[$urn[$i]];
+		}
+				
+		$sum = 0;
+		for ($j = 0; $j < strlen($numUrn); $j++) {
+			$sum += $numUrn[$j] * ($j+1);
+		}
+
+		$quot = $sum / substr($numUrn, -1);
+		
+		return substr((string)floor($quot), -1);
 	}
 }
 
