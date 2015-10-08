@@ -138,41 +138,47 @@ class URNPubIdPlugin extends PubIdPlugin {
 	function getPubId($pubObject, $preview = false) {
 		// Determine the type of the publishing object.
 		$pubObjectType = $this->getPubObjectType($pubObject);
+		
+		if ($pubObjectType == 'PublishedMonograph') {
+			$pubObjectType = 'Monograph';
+		}
 
 		// Initialize variables for publication objects.
 		$publicationFormat = ($pubObjectType == 'PublicationFormat' ? $pubObject : null);
 		$monograph = ($pubObjectType == 'Monograph' ? $pubObject : null);
-
+		
 		// Get the press id of the object.
 		if (in_array($pubObjectType, array('PublicationFormat', 'Monograph'))) {
 			$pressId = $pubObject->getContextId();
 		} else {
 			return null;
 		}
-
+		
 		$press = $this->_getPress($pressId);
 		if (!$press) return null;
 		$pressId = $press->getId();
 
 		// If we already have an assigned URN, use it.
-		//$storedURN = $pubObject->getStoredPubId('urn');
-		//if ($storedURN) return $storedURN;
+		$storedURN = $pubObject->getStoredPubId('urn');
+		if ($storedURN) return $storedURN;
 		
 		// Retrieve the URN prefix.
 		$urnPrefix = $this->getSetting($pressId, 'urnPrefix');
+		
+		error_log($urnPrefix);
 		if (empty($urnPrefix)) return null;
 
 		// Generate the URN suffix.
 		$urnSuffixGenerationStrategy = $this->getSetting($pressId, 'urnSuffix');
-
+		
 		switch ($urnSuffixGenerationStrategy) {
 /* 			case 'customId':
 				$urnSuffix = $pubObject->getData('urnSuffix');
 				break;
  */
 			case 'pattern':
-				$urnSuffix = $this->getSetting($pressId, "urn${pubObjectType}SuffixPattern");
-
+				$urnSuffix = $this->getSetting($pressId, "urnPublicationFormatSuffixPattern");
+				
 				// %p - press initials
 				$urnSuffix = String::regexp_replace('/%p/', String::strtolower($press->getPath()), $urnSuffix);
 
@@ -200,6 +206,8 @@ class URNPubIdPlugin extends PubIdPlugin {
 				}
 		}
 		if (empty($urnSuffix)) return null;
+		
+		error_log("4");
 
 		// Join prefix and suffix.
 		$urn = $urnPrefix . $urnSuffix;

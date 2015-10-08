@@ -7,9 +7,9 @@
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class URNSettingsForm
- * @ingroup plugins_pubIds_doi
+ * @ingroup plugins_pubIds_urn
  *
- * @brief Form for press managers to setup DOI plugin
+ * @brief Form for press managers to setup URN plugin
  */
 
 
@@ -31,12 +31,12 @@ class URNSettingsForm extends Form {
 		return $this->_pressId;
 	}
 
-	/** @var DOIPubIdPlugin */
+	/** @var URNPubIdPlugin */
 	var $_plugin;
 
 	/**
 	 * Get the plugin.
-	 * @return DOIPubIdPlugin
+	 * @return URNPubIdPlugin
 	 */
 	function &_getPlugin() {
 		return $this->_plugin;
@@ -48,7 +48,7 @@ class URNSettingsForm extends Form {
 	//
 	/**
 	 * Constructor
-	 * @param $plugin DOIPubIdPlugin
+	 * @param $plugin URNPubIdPlugin
 	 * @param $pressId integer
 	 */
 	function URNSettingsForm(&$plugin, $pressId) {
@@ -56,6 +56,30 @@ class URNSettingsForm extends Form {
 		$this->_plugin =& $plugin;
 
 		parent::Form($plugin->getTemplatePath() . 'settingsForm.tpl');
+		
+		$this->addCheck(new FormValidatorRegExp($this, 'urnPrefix', 'required', 'plugins.pubIds.urn.manager.settings.urnPrefixPattern', '/^urn:nbn:de(:[a-z0-9.-]+)+$/'));
+		$this->addCheck(new FormValidatorCustom($this, 'urnPublicationFormatSuffixPattern', 'required', 'plugins.pubIds.urn.manager.settings.urnPublicationFormatSuffixPatternRequired', create_function('$urnPublicationFormatSuffixPattern,$form', 'if ($form->getData(\'urnSuffix\') == \'pattern\') return $urnPublicationFormatSuffixPattern != \'\';return true;'), array(&$this)));
+		$this->addCheck(new FormValidator($this, 'urnSuffix' ,'required', 'plugins.pubIds.urn.manager.settings.urnSuffixRequired'));
+		$this->addCheck(new FormValidatorPost($this));
+
+		
+/* 		// for URN reset requests
+		import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
+		$application = PKPApplication::getApplication();
+		$request = $application->getRequest();
+		$clearPubIdsLinkAction =
+		new LinkAction(
+				'reassignURNs',
+				new RemoteActionConfirmationModal(
+						__('plugins.pubIds.urn.manager.settings.urnReassign.confirm'),
+						__('common.delete'),
+						$request->url(null, null, 'plugin', null, array('verb' => 'settings', 'clearPubIds' => true, 'plugin' => $plugin->getName(), 'category' => 'pubIds')),
+						'modal_delete'
+				),
+				__('plugins.pubIds.urn.manager.settings.urnReassign'),
+				'delete'
+		);
+		$this->setData('clearPubIdsLinkAction', $clearPubIdsLinkAction); */
 		
 		$this->setData('pluginName', $plugin->getName());
 	}
