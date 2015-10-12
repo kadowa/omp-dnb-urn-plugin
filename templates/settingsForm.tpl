@@ -53,6 +53,12 @@
 			{fbvElement type="radio" id="urnSuffixCustomIdentifier" name="urnSuffix" required="true" value="customId" checked=$checked label="plugins.pubIds.urn.manager.settings.urnSuffixCustomIdentifier"}
 		{/fbvFormSection}
 	{/fbvFormArea}
+	{fbvFormArea id="urnSuffixReassignFormArea" class="border" title="plugins.pubIds.urn.manager.settings.urnReassign"}
+		{fbvFormSection}
+			<span class="instruct">{translate key="plugins.pubIds.urn.manager.settings.urnReassign.description"}</span><br/>
+			{include file="linkAction/linkAction.tpl" action=$clearPubIdsLinkAction contextId="urnSettingsForm"}
+		{/fbvFormSection}
+	{/fbvFormArea}
 	{fbvFormButtons submitText="common.save"}
 </form>
 <p><span class="formRequired">{translate key="common.requiredField"}</span></p>

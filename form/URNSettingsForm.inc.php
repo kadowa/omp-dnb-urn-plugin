@@ -63,7 +63,7 @@ class URNSettingsForm extends Form {
 		$this->addCheck(new FormValidatorPost($this));
 
 		
-/* 		// for URN reset requests
+ 		// for URN reset requests
 		import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
 		$application = PKPApplication::getApplication();
 		$request = $application->getRequest();
@@ -79,8 +79,7 @@ class URNSettingsForm extends Form {
 				__('plugins.pubIds.urn.manager.settings.urnReassign'),
 				'delete'
 		);
-		$this->setData('clearPubIdsLinkAction', $clearPubIdsLinkAction); */
-		
+		$this->setData('clearPubIdsLinkAction', $clearPubIdsLinkAction);		
 		$this->setData('pluginName', $plugin->getName());
 	}
 

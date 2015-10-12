@@ -135,21 +135,13 @@ class URNPubIdPlugin extends PubIdPlugin {
 	/**
 	 * @see PubIdPlugin::getPubId()
 	 */
-	function getPubId($pubObject, $preview = false) {
+	function getPubId($monograph, $preview = false) {
 		// Determine the type of the publishing object.
-		$pubObjectType = $this->getPubObjectType($pubObject);
-		
-		if ($pubObjectType == 'PublishedMonograph') {
-			$pubObjectType = 'Monograph';
-		}
+		$pubObjectType = $this->getPubObjectType($monograph);
 
-		// Initialize variables for publication objects.
-		$publicationFormat = ($pubObjectType == 'PublicationFormat' ? $pubObject : null);
-		$monograph = ($pubObjectType == 'Monograph' ? $pubObject : null);
-		
 		// Get the press id of the object.
-		if (in_array($pubObjectType, array('PublicationFormat', 'Monograph'))) {
-			$pressId = $pubObject->getContextId();
+		if (in_array($pubObjectType, array('Monograph', 'PublishedMonograph'))) {
+			$pressId = $monograph->getContextId();
 		} else {
 			return null;
 		}
@@ -159,13 +151,12 @@ class URNPubIdPlugin extends PubIdPlugin {
 		$pressId = $press->getId();
 
 		// If we already have an assigned URN, use it.
-		$storedURN = $pubObject->getStoredPubId('urn');
+		$storedURN = $monograph->getStoredPubId('urn');
 		if ($storedURN) return $storedURN;
 		
 		// Retrieve the URN prefix.
 		$urnPrefix = $this->getSetting($pressId, 'urnPrefix');
 		
-		error_log($urnPrefix);
 		if (empty($urnPrefix)) return null;
 
 		// Generate the URN suffix.
@@ -182,11 +173,6 @@ class URNPubIdPlugin extends PubIdPlugin {
 				// %p - press initials
 				$urnSuffix = String::regexp_replace('/%p/', String::strtolower($press->getPath()), $urnSuffix);
 
-				if ($publicationFormat) {
-					// %m - monograph id, %f - publication format id
-					$urnSuffix = String::regexp_replace('/%m/', $publicationFormat->getMonographId(), $urnSuffix);
-					$urnSuffix = String::regexp_replace('/%f/', $publicationFormat->getId(), $urnSuffix);
-				}
 				if ($monograph) {
 					// %m - monograph id
 					$urnSuffix = String::regexp_replace('/%m/', $monograph->getId(), $urnSuffix);
@@ -197,24 +183,18 @@ class URNPubIdPlugin extends PubIdPlugin {
 			default:
 				$urnSuffix = String::strtolower($press->getPath());
 
-				if ($publicationFormat) {
-					$urnSuffix .= '.' . $publicationFormat->getMonographId();
- 					$urnSuffix .= '.' . $publicationFormat->getId();
-				}
 				if ($monograph) {
 					$urnSuffix .= '.' . $monograph->getId();
 				}
 		}
 		if (empty($urnSuffix)) return null;
-		
-		error_log("4");
 
 		// Join prefix and suffix.
 		$urn = $urnPrefix . $urnSuffix;
 
 		if (!$preview) {
 			// Save the generated URN.
-			$this->setStoredPubId($pubObject, $pubObjectType, $urn);
+			$this->setStoredPubId($monograph, $pubObjectType, $urn);
 		}
 
 		return $urn . $this->_calculateUrnCheckNo($urn);
@@ -307,6 +287,20 @@ class URNPubIdPlugin extends PubIdPlugin {
 		return count($urnParts) == 2 and substr($pubId, 0, 3) == "urn:";
 	}
 
+	/**
+	 * Return the name of the corresponding DAO.
+	 * @param $pubObject object
+	 * @return DAO
+	 */
+	function &getDAO($pubObjectType) {
+		$daos =  array(
+				'PublishedMonograph' => 'PublishedMonographDAO',
+				'Monograph' => 'MonographDAO',
+		);
+		$daoName = $daos[$pubObjectType];
+		assert(!empty($daoName));
+		return DAORegistry::getDAO($daoName);
+	}
 
 	//
 	// Private helper methods
