@@ -58,7 +58,7 @@ class URNSettingsForm extends Form {
 		parent::Form($plugin->getTemplatePath() . 'settingsForm.tpl');
 		
 		$this->addCheck(new FormValidatorRegExp($this, 'urnPrefix', 'required', 'plugins.pubIds.urn.manager.settings.urnPrefixPattern', '/^urn:nbn:de(:[a-z0-9.-]+)+$/'));
-		$this->addCheck(new FormValidatorCustom($this, 'urnPublicationFormatSuffixPattern', 'required', 'plugins.pubIds.urn.manager.settings.urnPublicationFormatSuffixPatternRequired', create_function('$urnPublicationFormatSuffixPattern,$form', 'if ($form->getData(\'urnSuffix\') == \'pattern\') return $urnPublicationFormatSuffixPattern != \'\';return true;'), array(&$this)));
+		$this->addCheck(new FormValidatorCustom($this, 'urnSuffixPattern', 'required', 'plugins.pubIds.urn.manager.settings.urnSuffixPatternRequired', create_function('$urnSuffixPattern,$form', 'if ($form->getData(\'urnSuffix\') == \'pattern\') return $urnSuffixPattern != \'\';return true;'), array(&$this)));
 		$this->addCheck(new FormValidator($this, 'urnSuffix' ,'required', 'plugins.pubIds.urn.manager.settings.urnSuffixRequired'));
 		$this->addCheck(new FormValidatorPost($this));
 
@@ -124,7 +124,7 @@ class URNSettingsForm extends Form {
 		return array(
 			'urnPrefix' => 'string',
 			'urnSuffix' => 'string',
-			'urnPublicationFormatSuffixPattern' => 'string',
+			'urnSuffixPattern' => 'string',
 		);
 	}
 }

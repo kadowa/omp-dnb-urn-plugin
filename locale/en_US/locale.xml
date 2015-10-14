@@ -10,44 +10,31 @@
   * URN plugin localization strings
   -->
  
-<locale name="en_US" full_name="U.S. English">
+<locale name="de_DE" full_name="Deutsch (Deutschland)">
 	<message key="plugins.pubIds.urn.displayName">DNB URN</message>
-	<message key="plugins.pubIds.urn.description">This plugin enables the assignment of Uniform Resource Names according to the DNB to publication formats in OMP.</message>
+	<message key="plugins.pubIds.urn.description">This plugin enables the assignment of Uniform Resource Names according to the DNB to monographs in OMP.</message>
 	
 	<!-- settings form -->
-	<message key="plugins.pubIds.urn.manager.settings.urnSettings">URN Plugin Settings</message>
-	<message key="plugins.pubIds.urn.manager.settings.description">Please configure the URN plug-in to be able to manage and use URNs in OMP:</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnSettings">DNB URN Plugin Settings</message>
+	<message key="plugins.pubIds.urn.manager.settings.description">Please configure the DNB URN plug-in to be able to manage and use DNB URNs in OMP. A DNB URN is composed of a prefix and a Namespace Specific String, which can both be configured for each press. A check digit is added automatically.</message>
 	<message key="plugins.pubIds.urn.manager.settings.urnSettingsUpdated">URN Plugin Settings Updated</message>
-
-	<message key="plugins.pubIds.urn.manager.settings.urnObjects">Publication Format Content</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnObjectsRequired">Please choose the objects URNs should be assigned to.</message>
-	<message key="plugins.pubIds.urn.manager.settings.explainUrns">Please select the publishing objects that will have Unform Resource Identifiers (URN) assigned:</message>
 	
-	<message key="plugins.pubIds.urn.manager.settings.urnPrefix">URN Prefix</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnPrefixDescription"><![CDATA[The URN Prefix is assigned by registration agencies (e.g. <a href="http://www.crossref.org" target="_new">CrossRef</a>) and is in the format 10.xxxx (e.g. 10.1234):]]></message>
-	<message key="plugins.pubIds.urn.manager.settings.urnPrefixPattern">The URN prefix is mandatory and must be in the form urn:[...].</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnPrefix">DNB URN Prefix</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnPrefixDescription"><![CDATA[The URN Prefix is assigned by the DNB (e.g. <a href="http://www.crossref.org" target="_new">CrossRef</a>) and is in the format urn:nbn:de followed by one ore more subnamespaces.]]></message>
+	<message key="plugins.pubIds.urn.manager.settings.urnPrefixPattern">The DNB URN prefix is mandatory and must be in the form urn:nbn:de followed by one ore more subnamespaces.</message>
 
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffix">URN Suffix</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffixRequired">A URN Suffix choice is required.</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffixDescription">A URN suffix can take any form, but must be unique among all publishing objects with the same URN prefix assigned:</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffixPattern">Use the pattern entered below to generate URN suffixes. Use %p for press initials, %m for the monograph id, and %f for the publication format unique id.</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffixPattern.publicationFormats">for publication formats</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffixPattern.example">For example, press%ppub%f could create a URN such as 10.1234/pressESPpub100</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnSuffix">Namespace Specific String</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnSuffixRequired">A pattern to generate a Namespace Specific String is required.</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnSuffixDescription">A DNB Namespace Specific String starts with a hyphen '-', followed by an alphanumerical string (allowed characters are a-z, 0-9, hyphen '-' and period '.'). It must be unique among all publishing objects with the same URN prefix.</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnSuffixPattern">Use the pattern entered below to generate Namespace Specific Strings. Use %p for press initials and %m for the monograph unique id.</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnSuffixPattern.example">For example, -press%ppub%m could create a DNB URN such as urn:nbn:de:espsub-pressESPpub100</message>
 	<message key="plugins.pubIds.urn.manager.settings.urnSuffixDefault">Use default patterns.</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffixDefault.description"><![CDATA[%p.%m.%f for publication formats.]]></message>
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffixPublisherId">Use the "Custom Identifier" for published items as the URN suffix (must be enabled in Step 4). This is the same identifier that will be used for public URLs.</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnSuffixCustomIdentifier">Enter an individual URN suffix for each published item independent and different from the "Custom Identifier" mentioned in the previous option. You'll find an additional URN input field on each item's meta-data page.</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnPublicationFormatSuffixPatternRequired">Please enter the URN suffix pattern for publication formats.</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnSuffixDefault.description"><![CDATA[%p.%m for monographs.]]></message>
+	<message key="plugins.pubIds.urn.manager.settings.urnSuffixPatternRequired">Please enter the Namespace Specific String pattern for monographs.</message>
 	
-	<message key="plugins.pubIds.urn.manager.settings.urnReassign">Reassign URNs</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnReassign.description">If you change your URN configuration, URNs that have already been assigned will not be affected. Once the URN configuration is saved, use this button to clear all existing URNs so that the new settings will take effect with existing publication formats.</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnReassign">Reassign DNB URNs</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnReassign.description">If you change your DNB URN configuration, DNB URNs that have already been assigned will not be affected. Once the DNB URN configuration is saved, use this button to clear all existing URNs so that the new settings will take effect with existing publication formats.</message>
 	<message key="plugins.pubIds.urn.manager.settings.urnReassign.confirm">Are you sure you wish to delete all existing URNs?</message>
-	<message key="plugins.pubIds.urn.manager.settings.urnReassign.success">URNs reassigned.</message>
+	<message key="plugins.pubIds.urn.manager.settings.urnReassign.success">DNB URNs reassigned.</message>
 	<message key="grid.action.reassignURNs">Reassign existing URNs</message>
-
-	<!-- metadata form -->
-	<message key="plugins.pubIds.urn.editor.urn">URN</message>
-	<message key="plugins.pubIds.urn.editor.urnObjectTypePublicationFormat">publication format</message>
-	<message key="plugins.pubIds.urn.editor.urnNotYetGenerated">What you see is a preview of the URN that may be incomplete. A URN has not yet been generated. Publishing the monograph and viewing the public Monograph Catalog page will automatically generate a unique URN for this publication format.</message>
-	<message key="plugins.pubIds.urn.editor.urnSuffixCustomIdentifierNotUnique">The given URN suffix is already in use for another published item. Please enter a unique URN suffix for each item.</message>
 </locale>

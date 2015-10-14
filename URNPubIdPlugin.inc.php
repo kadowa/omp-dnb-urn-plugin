@@ -168,7 +168,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 				break;
  */
 			case 'pattern':
-				$urnSuffix = $this->getSetting($pressId, "urnPublicationFormatSuffixPattern");
+				$urnSuffix = $this->getSetting($pressId, "urnSuffixPattern");
 				
 				// %p - press initials
 				$urnSuffix = String::regexp_replace('/%p/', String::strtolower($press->getPath()), $urnSuffix);
