@@ -3,11 +3,12 @@
 /**
  * @file plugins/pubIds/urn_dnb/URNDNBPubIdPlugin.inc.php
  *
- * Copyright (c) 2015 Heidelberg University
+ * Copyright (c) 2014-2015 Simon Fraser University Library
+ * Copyright (c) 2000-2015 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class URNDNBPubIdPlugin
- * @ingroup plugins_pubIds_urn_dnb
+ * @ingroup plugins_pubIds_urndnb
  *
  * @brief URNDNB plugin class
  */
