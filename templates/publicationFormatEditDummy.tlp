@@ -1,0 +1,9 @@
+{**
+ * plugins/pubIds/urn_dnb/templates/publicationFormatEditDummy.tlp
+ *
+ * Copyright (c) 2015 Heidelberg University
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * Dummy file to prevent a smarty error message.
+ *
+ *}

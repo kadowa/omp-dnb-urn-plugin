@@ -1,25 +1,22 @@
 <?php
 
 /**
- * @file plugins/pubIds/urn_dnb/classes/form/URNSettingsForm.inc.php
+ * @file plugins/pubIds/urn_dnb/classes/form/URNDNBSettingsForm.inc.php
  *
  * Copyright (c) 2015 Heidelberg University
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class URNSettingsForm
- * @ingroup plugins_pubIds_urn
+ * @class URNDNBSettingsForm
+ * @ingroup plugins_pubIds_urn_dnb
  *
- * @brief Form for press managers to setup URN plugin
+ * @brief Form for press managers to setup URNDNB plugin
  */
 
 
 import('lib.pkp.classes.form.Form');
 
-class URNSettingsForm extends Form {
+class URNDNBSettingsForm extends Form {
 
-	//
-	// Private properties
-	//
 	/** @var integer */
 	var $_pressId;
 
@@ -31,52 +28,51 @@ class URNSettingsForm extends Form {
 		return $this->_pressId;
 	}
 
-	/** @var URNPubIdPlugin */
+	/** @var URNDNBPubIdPlugin */
 	var $_plugin;
 
 	/**
 	 * Get the plugin.
-	 * @return URNPubIdPlugin
+	 * @return URNDNBPubIdPlugin
 	 */
 	function &_getPlugin() {
 		return $this->_plugin;
 	}
 
 
-	//
-	// Constructor
-	//
 	/**
 	 * Constructor
-	 * @param $plugin URNPubIdPlugin
+	 * @param $plugin URNDNBPubIdPlugin
 	 * @param $pressId integer
 	 */
-	function URNSettingsForm(&$plugin, $pressId) {
+	function URNDNBSettingsForm(&$plugin, $pressId) {
 		$this->_pressId = $pressId;
 		$this->_plugin =& $plugin;
 
 		parent::Form($plugin->getTemplatePath() . 'settingsForm.tpl');
 		
-		$this->addCheck(new FormValidatorRegExp($this, 'urnPrefix', 'required', 'plugins.pubIds.urn.manager.settings.urnPrefixPattern', '/^urn:nbn:de(:[a-z0-9.-]+)+$/'));
-		$this->addCheck(new FormValidatorCustom($this, 'urnSuffixPattern', 'required', 'plugins.pubIds.urn.manager.settings.urnSuffixPatternRequired', create_function('$urnSuffixPattern,$form', 'if ($form->getData(\'urnSuffix\') == \'pattern\') return $urnSuffixPattern != \'\';return true;'), array(&$this)));
-		$this->addCheck(new FormValidator($this, 'urnSuffix' ,'required', 'plugins.pubIds.urn.manager.settings.urnSuffixRequired'));
+		$this->addCheck(new FormValidatorRegExp($this, 'urnDNBPrefix', 'required', 'plugins.pubIds.urnDNB.manager.settings.urnDNBPrefixPattern', '/^urn:nbn(:[a-z0-9.-]+)+$/'));
+		$this->addCheck(new FormValidatorCustom($this, 'urnDNBSuffixPattern', 'required', 'plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPatternRequired', create_function('$urnDNBSuffixPattern,$form', 'if ($form->getData(\'urnDNBSuffix\') == \'pattern\') return $urnDNBSuffixPattern != \'\';return true;'), array(&$this)));
+		$this->addCheck(new FormValidatorRegExp($this, 'urnDNBSuffixPattern', 'optional', 'plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPatternFormat', '/^-[a-z0-9\.\-]*%[mp][a-z0-9\.\-]*%[mp][a-z0-9\.\-]*$/'));
+		$this->addCheck(new FormValidatorRegExp($this, 'urnDNBSuffixPattern', 'optional', 'plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPatternFormat', '/%m/'));
+		$this->addCheck(new FormValidator($this, 'urnDNBSuffix' ,'required', 'plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixRequired'));
 		$this->addCheck(new FormValidatorPost($this));
 
 		
- 		// for URN reset requests
+ 		// for URNDNB reset requests
 		import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
 		$application = PKPApplication::getApplication();
 		$request = $application->getRequest();
 		$clearPubIdsLinkAction =
 		new LinkAction(
-				'reassignURNs',
+				'reassignURNDNBs',
 				new RemoteActionConfirmationModal(
-						__('plugins.pubIds.urn.manager.settings.urnReassign.confirm'),
+						__('plugins.pubIds.urnDNB.manager.settings.urnDNBReassign.confirm'),
 						__('common.delete'),
 						$request->url(null, null, 'plugin', null, array('verb' => 'settings', 'clearPubIds' => true, 'plugin' => $plugin->getName(), 'category' => 'pubIds')),
 						'modal_delete'
 				),
-				__('plugins.pubIds.urn.manager.settings.urnReassign'),
+				__('plugins.pubIds.urnDNB.manager.settings.urnDNBReassign'),
 				'delete'
 		);
 		$this->setData('clearPubIdsLinkAction', $clearPubIdsLinkAction);		
@@ -122,9 +118,9 @@ class URNSettingsForm extends Form {
 	//
 	function _getFormFields() {
 		return array(
-			'urnPrefix' => 'string',
-			'urnSuffix' => 'string',
-			'urnSuffixPattern' => 'string',
+			'urnDNBPrefix' => 'string',
+			'urnDNBSuffix' => 'string',
+			'urnDNBSuffixPattern' => 'string',
 		);
 	}
 }

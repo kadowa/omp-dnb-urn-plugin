@@ -1,61 +1,60 @@
 {**
  * plugins/pubIds/urn_dnb/templates/settingsForm.tpl
  *
-  * Copyright (c) 2015 Heidelberg University
-  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2015 Heidelberg University
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * URN plugin settings
+ * URN DNB plugin settings
  *
  *}
-<div id="description">{translate key="plugins.pubIds.urn.manager.settings.description"}</div>
+<div id="description">{translate key="plugins.pubIds.urnDNB.manager.settings.description"}</div>
 
 <script type="text/javascript">
 	$(function() {ldelim}
 		// Attach the form handler.
-		$('#urnSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
+		$('#urnDNBSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
 	{rdelim});
 </script>
-<form class="pkp_form" id="urnSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="plugin" category="pubIds" plugin=$pluginName verb="settings" save="true"}">
+<form class="pkp_form" id="urnDNBSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="plugin" category="pubIds" plugin=$pluginName verb="settings" save="true"}">
 	{include file="common/formErrors.tpl"}
-	{fbvFormArea id="enableUrnSettingsFormArea" class="border" title="plugins.pubIds.urn.manager.settings.urnPrefix"}
+	{fbvFormArea id="enableUrnSettingsFormArea" class="border" title="plugins.pubIds.urnDNB.manager.settings.urnDNBPrefix"}
 		{fbvFormSection}
-			<p class="pkp_help">{translate key="plugins.pubIds.urn.manager.settings.urnPrefixPattern"}</p>
-			{fbvElement type="text" label="plugins.pubIds.urn.manager.settings.urnPrefix" required="true" id="urnPrefix" value=$urnPrefix maxlength="40" size=$fbvStyles.size.MEDIUM}
+			<p class="pkp_help">{translate key="plugins.pubIds.urnDNB.manager.settings.urnDNBPrefixPattern"}</p>
+			{fbvElement type="text" label="plugins.pubIds.urnDNB.manager.settings.urnDNBPrefix" required="true" id="urnDNBPrefix" value=$urnDNBPrefix maxlength="40" size=$fbvStyles.size.MEDIUM}
 		{/fbvFormSection}
 	{/fbvFormArea}
-	{fbvFormArea id="urnSuffixPatternFormArea" class="border" title="plugins.pubIds.urn.manager.settings.urnSuffix"}
-		{fbvFormSection label="plugins.pubIds.urn.manager.settings.urnSuffixDescription" list="true"}
-			{if $urnSuffix eq "pattern"}
+	{fbvFormArea id="urnDNBSuffixPatternFormArea" class="border" title="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffix"}
+		{fbvFormSection label="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixDescription" list="true"}
+			{if $urnDNBSuffix eq "pattern"}
 				{assign var="checked" value=true}
 			{else}
 				{assign var="checked" value=false}
 			{/if}
-			{fbvElement type="radio" id="urnSuffix" name="urnSuffix" value="pattern" checked=$checked label="plugins.pubIds.urn.manager.settings.urnSuffixPattern"}
+			{fbvElement type="radio" id="urnDNBSuffix" name="urnDNBSuffix" value="pattern" checked=$checked label="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPatternDescription"}
 		{/fbvFormSection}
 		{fbvFormSection}
-			<p class="pkp_help">{fieldLabel name="urnSuffixPattern" key="plugins.pubIds.urn.manager.settings.urnSuffixPattern.example"}</p>
-			{fbvElement type="text" label="plugins.pubIds.urn.manager.settings.urnSuffixPattern" id="urnSuffixPattern" value=$urnSuffixPattern maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
+			<p class="pkp_help">{fieldLabel name="urnDNBSuffixPattern" key="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPattern.example"}</p>
+			{fbvElement type="text" label="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPattern" id="urnDNBSuffixPattern" value=$urnDNBSuffixPattern maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
 		{/fbvFormSection}
-
 		{fbvFormSection list="true"}
-			{if !in_array($urnSuffix, array("pattern", "publisherId", "customId"))}
+			{if !in_array($urnDNBSuffix, array("pattern", "publisherId", "customId"))}
 				{assign var="checked" value=true}
 			{else}
 				{assign var="checked" value=false}
 			{/if}
-			{fbvElement type="radio" id="urnSuffixDefault" name="urnSuffix" required="true" value="default" checked=$checked label="plugins.pubIds.urn.manager.settings.urnSuffixDefault"}
-			<span class="instruct">{translate key="plugins.pubIds.urn.manager.settings.urnSuffixDefault.description"}</span>
-			{if $urnSuffix eq "customId"}
+			{fbvElement type="radio" id="urnDNBSuffixDefault" name="urnDNBSuffix" required="true" value="default" checked=$checked label="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixDefault"}
+			<span class="instruct">{translate key="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixDefault.description"}</span>
+			{if $urnDNBSuffix eq "customId"}
 				{assign var="checked" value=true}
 			{else}
 				{assign var="checked" value=false}
 			{/if}
 		{/fbvFormSection}
 	{/fbvFormArea}
-	{fbvFormArea id="urnSuffixReassignFormArea" class="border" title="plugins.pubIds.urn.manager.settings.urnReassign"}
+	{fbvFormArea id="urnDNBSuffixReassignFormArea" class="border" title="plugins.pubIds.urnDNB.manager.settings.urnDNBReassign"}
 		{fbvFormSection}
-			<span class="instruct">{translate key="plugins.pubIds.urn.manager.settings.urnReassign.description"}</span><br/>
-			{include file="linkAction/linkAction.tpl" action=$clearPubIdsLinkAction contextId="urnSettingsForm"}
+			<span class="instruct">{translate key="plugins.pubIds.urnDNB.manager.settings.urnDNBReassign.description"}</span><br/>
+			{include file="linkAction/linkAction.tpl" action=$clearPubIdsLinkAction contextId="urnDNBSettingsForm"}
 		{/fbvFormSection}
 	{/fbvFormArea}
 	{fbvFormButtons submitText="common.save"}

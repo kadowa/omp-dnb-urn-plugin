@@ -5,17 +5,17 @@
  */
 
 /**
- * @file plugins/pubIds/urn/index.php
+ * @file plugins/pubIds/urn_dnb/index.php
  *
  * Copyright (c) 2015 Heidelberg University
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @ingroup plugins_pubIds_doi
- * @brief Wrapper for URN plugin.
+ * @brief Wrapper for DNB URN plugin.
  *
  */
-require_once('URNPubIdPlugin.inc.php');
+require_once('URNDNBPubIdPlugin.inc.php');
 
-return new URNPubIdPlugin();
+return new URNDNBPubIdPlugin();
 
 ?>

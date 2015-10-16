@@ -1,21 +1,21 @@
 <?php
 
 /**
- * @file plugins/pubIds/urn/URNPubIdPlugin.inc.php
+ * @file plugins/pubIds/urn_dnb/URNDNBPubIdPlugin.inc.php
  *
  * Copyright (c) 2015 Heidelberg University
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
- * @class URNPubIdPlugin
- * @ingroup plugins_pubIds_urn
+ * @class URNDNBPubIdPlugin
+ * @ingroup plugins_pubIds_urn_dnb
  *
- * @brief URN plugin class
+ * @brief URNDNB plugin class
  */
 
 
 import('classes.plugins.PubIdPlugin');
 
-class URNPubIdPlugin extends PubIdPlugin {
+class URNDNBPubIdPlugin extends PubIdPlugin {
 
 	//
 	// Implement template methods from PKPPlugin.
@@ -33,21 +33,21 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @see PKPPlugin::getName()
 	 */
 	function getName() {
-		return 'URNPubIdPlugin';
+		return 'URNDNBPubIdPlugin';
 	}
 
 	/**
 	 * @see PKPPlugin::getDisplayName()
 	 */
 	function getDisplayName() {
-		return __('plugins.pubIds.urn.displayName');
+		return __('plugins.pubIds.urnDNB.displayName');
 	}
 
 	/**
 	 * @see PKPPlugin::getDescription()
 	 */
 	function getDescription() {
-		return __('plugins.pubIds.urn.description');
+		return __('plugins.pubIds.urnDNB.description');
 	}
 
 	/**
@@ -151,16 +151,16 @@ class URNPubIdPlugin extends PubIdPlugin {
 		$pressId = $press->getId();
 
 		// If we already have an assigned URN, use it.
-		$storedURN = $monograph->getStoredPubId('urn');
-		if ($storedURN) return $storedURN;
+		$storedURNDNB = $monograph->getStoredPubId('urn');
+		if ($storedURNDNB) return $storedURNDNB;
 		
 		// Retrieve the URN prefix.
-		$urnPrefix = $this->getSetting($pressId, 'urnPrefix');
+		$urnPrefix = $this->getSetting($pressId, 'urnDNBPrefix');
 		
 		if (empty($urnPrefix)) return null;
 
 		// Generate the URN suffix.
-		$urnSuffixGenerationStrategy = $this->getSetting($pressId, 'urnSuffix');
+		$urnSuffixGenerationStrategy = $this->getSetting($pressId, 'urnDNBSuffix');
 		
 		switch ($urnSuffixGenerationStrategy) {
 /* 			case 'customId':
@@ -168,7 +168,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 				break;
  */
 			case 'pattern':
-				$urnSuffix = $this->getSetting($pressId, "urnSuffixPattern");
+				$urnSuffix = $this->getSetting($pressId, "urnDNBSuffixPattern");
 				
 				// %p - press initials
 				$urnSuffix = String::regexp_replace('/%p/', String::strtolower($press->getPath()), $urnSuffix);
@@ -204,7 +204,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @see PubIdPlugin::getPubIdType()
 	 */
 	function getPubIdType() {
-		return 'urn';
+		return 'other::urnDNB';
 	}
 
 	/**
@@ -232,50 +232,34 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @see PubIdPlugin::getFormFieldNames()
 	 */
 	function getFormFieldNames() {
-		return array('urnSuffix');
+		return array();
 	}
 
 	/**
 	 * @see PubIdPlugin::getDAOFieldNames()
 	 */
 	function getDAOFieldNames() {
-		return array('pub-id::urn');
+		return array('pub-id::other::urnDNB');
 	}
 
 	/**
 	 * @see PubIdPlugin::getPubIdMetadataFile()
 	 */
 	function getPubIdMetadataFile() {
-		return $this->getTemplatePath().'urnSuffixEdit.tpl';
+		return $this->getTemplatePath().'publicationFormatEditDummy.tlp';
 	}
 
 	/**
 	 * @see PubIdPlugin::getSettingsFormName()
 	 */
 	function getSettingsFormName() {
-		return 'form.URNSettingsForm';
+		return 'form.URNDNBSettingsForm';
 	}
 
 	/**
 	 * @see PubIdPlugin::verifyData()
 	 */
 	function verifyData($fieldName, $fieldValue, &$pubObject, $pressId, &$errorMsg) {
-/* 		// Verify URN uniqueness.
-		assert($fieldName == 'urnSuffix');
-		if (empty($fieldValue)) return true;
-
-		// Construct the potential new URN with the posted suffix.
-		$urnPrefix = $this->getSetting($pressId, 'urnPrefix');
-		if (empty($urnPrefix)) return true;
-		$newUrn = $urnPrefix . '/' . $fieldValue;
-
-		if($this->checkDuplicate($newUrn, $pubObject, $pressId)) {
-			return true;
-		} else {
-			$errorMsg = __('plugins.pubIds.urn.editor.urnSuffixCustomIdentifierNotUnique');
-			return false;
-		} */
-		//TODO: check, if all chars in urnPrefix and Suffix are allowed (check at form level?)
 		return True;
 	}
 

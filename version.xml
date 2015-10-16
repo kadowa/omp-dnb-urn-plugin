@@ -15,5 +15,5 @@
 	<release>1.0.0.0</release>
 	<date>2015-10-05</date>
 	<lazy-load>1</lazy-load>
-	<class>URNPubIdPlugin</class>
+	<class>URNDNBPubIdPlugin</class>
 </version>
