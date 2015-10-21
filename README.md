@@ -4,7 +4,7 @@
 
 ## Installation
 
-	git clone https://github.com/kadowa/omp-dnb-urn-plugin omp/plugins/pubIds/urn_dnb
+	git clone https://github.com/ub-heidelberg/urn_dnb omp/plugins/pubIds/urn_dnb
 	php omp/tools/upgrade.php upgrade
 
 ## Configuration
@@ -13,7 +13,7 @@ After installation, enable and configure the plugin in `Management > Settings > 
 
 ## Bugs / Issues
 
-You can report issues here: <https://github.com/kadowa/omp-dnb-urn-plugin/issues>
+You can report issues here: <https://github.com/ub-heidelberg/urn_dnb/issues>
 
 ## License
 
