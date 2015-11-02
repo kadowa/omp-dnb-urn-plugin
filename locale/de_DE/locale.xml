@@ -32,7 +32,7 @@
 	<message key="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPattern.example">Muster für Namensraumbezeichner, das eindeutige URNs erzeugt. %p dient als Platzhalter für das Verlagskürzel, %m für die eindeutige Titelnummer. Mindestens %m muss enthalten sein.</message>
 	<message key="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPatternFormat">Das Muster muss mit '-' beginnen und mindestens %m enthalten, damit der Bezeichner eindeutig wird. Neben '%p' und '%m' dürfen nur die Zeichen a-z, 0-9 '-' und '.' enthalten sein.</message>
 	<message key="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixDefault">Das Standardmuster verwenden.</message>
-	<message key="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixDefault.description"><![CDATA[%-p.%m]]></message>
+	<message key="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixDefault.description"><![CDATA[-%p.%m]]></message>
 	<message key="plugins.pubIds.urnDNB.manager.settings.urnDNBSuffixPatternRequired">Bitte geben Sie ein Muster für Namensraumbezeichner ein.</message>
 	
 	<message key="plugins.pubIds.urnDNB.manager.settings.urnDNBReassign">URNs neu zuweisen</message>
