@@ -70,7 +70,7 @@ class URNDNBSettingsForm extends Form {
 				new RemoteActionConfirmationModal(
 						__('plugins.pubIds.urnDNB.manager.settings.urnDNBReassign.confirm'),
 						__('common.delete'),
-						$request->url(null, null, 'plugin', null, array('verb' => 'settings', 'clearPubIds' => true, 'plugin' => $plugin->getName(), 'category' => 'pubIds')),
+						$request->url(null, null, 'manage', null, array('verb' => 'settings', 'clearPubIds' => true, 'plugin' => $plugin->getName(), 'category' => 'pubIds')),
 						'modal_delete'
 				),
 				__('plugins.pubIds.urnDNB.manager.settings.urnDNBReassign'),
