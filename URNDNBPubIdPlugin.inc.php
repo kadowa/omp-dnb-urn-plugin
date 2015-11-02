@@ -93,10 +93,6 @@ class URNDNBPubIdPlugin extends PubIdPlugin {
 		$urnSuffixGenerationStrategy = $this->getSetting($pressId, 'urnDNBSuffix');
 		
 		switch ($urnSuffixGenerationStrategy) {
-/* 			case 'customId':
-				$urnSuffix = $pubObject->getData('urnSuffix');
-				break;
- */
 			case 'pattern':
 				$urnSuffix = $this->getSetting($pressId, "urnDNBSuffixPattern");
 				
