@@ -107,7 +107,7 @@ class URNDNBPubIdPlugin extends PubIdPlugin {
 				break;
 
 			default:
-				$urnSuffix = String::strtolower($press->getPath());
+				$urnSuffix = '-' . String::strtolower($press->getPath());
 
 				if ($monograph) {
 					$urnSuffix .= '.' . $monograph->getId();
