@@ -16,7 +16,7 @@
 		$('#urnDNBSettingsForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
 	{rdelim});
 </script>
-<form class="pkp_form" id="urnDNBSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="plugin" category="pubIds" plugin=$pluginName verb="settings" save="true"}">
+<form class="pkp_form" id="urnDNBSettingsForm" method="post" action="{url router=$smarty.const.ROUTE_COMPONENT op="manage" category="pubIds" plugin=$pluginName verb="settings" save="true"}">
 	{include file="common/formErrors.tpl"}
 	{fbvFormArea id="enableUrnSettingsFormArea" class="border" title="plugins.pubIds.urnDNB.manager.settings.urnDNBPrefix"}
 		{fbvFormSection}

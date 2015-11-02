@@ -53,82 +53,11 @@ class URNDNBPubIdPlugin extends PubIdPlugin {
 
 	/**
 	 * @see Plugin::getTemplatePath($inCore)
+	 * @param $inCore boolean True iff a core template should be preferred
 	 */
 	function getTemplatePath($inCore = false) {
 		return parent::getTemplatePath($inCore) . 'templates/';
-	}
-
-	/**
-	 * Define management link actions for the settings verb.
-	 * @return LinkAction
-	 */
-	function getManagementVerbLinkAction($request, $verb) {
-		$router = $request->getRouter();
-
-		list($verbName, $verbLocalized) = $verb;
-
-		if ($verbName === 'settings') {
-			import('lib.pkp.classes.linkAction.request.AjaxLegacyPluginModal');
-			$actionRequest = new AjaxLegacyPluginModal(
-					$router->url($request, null, null, 'plugin', null, array('verb' => 'settings', 'plugin' => $this->getName(), 'category' => 'pubIds')),
-					$this->getDisplayName()
-			);
-			return new LinkAction($verbName, $actionRequest, $verbLocalized, null);
-		}
-
-		return null;
-	}
-	
-	/**
-	 * @see PKPPlugin::manage()
-	 */
-	function manage($verb, $args, &$message, &$messageParams, &$pluginModalContent = null) {
-		$request = $this->getRequest();
-		$templateManager = TemplateManager::getManager($request);
-		$templateManager->register_function('plugin_url', array(&$this, 'smartyPluginUrl'));
-		if (!$this->getEnabled() && $verb != 'enable') return false;
-		switch ($verb) {
-			case 'enable':
-				$this->setEnabled(true);
-				$message = NOTIFICATION_TYPE_PLUGIN_ENABLED;
-				$messageParams = array('pluginName' => $this->getDisplayName());
-				return false;
-	
-			case 'disable':
-				$this->setEnabled(false);
-				$message = NOTIFICATION_TYPE_PLUGIN_DISABLED;
-				$messageParams = array('pluginName' => $this->getDisplayName());
-				return false;
-	
-			case 'settings':
-				$press = $request->getPress();
-	
-				$settingsFormName = $this->getSettingsFormName();
-				$settingsFormNameParts = explode('.', $settingsFormName);
-				$settingsFormClassName = array_pop($settingsFormNameParts);
-				$this->import($settingsFormName);
-				$form = new $settingsFormClassName($this, $press->getId());
-				if ($request->getUserVar('save')) {
-					$form->readInputData();
-					if ($form->validate()) {
-						$form->execute();
-						$message = NOTIFICATION_TYPE_SUCCESS;
-						$messageParams = array('contents' => __('plugins.pubIds.urn.manager.settings.urnSettingsUpdated'));
-						return false;
-					} else {
-						$pluginModalContent = $form->fetch($request);
-					}
-				} else {
-					$form->initData();
-					$pluginModalContent = $form->fetch($request);
-				}
-				return false;
-			default:
-				// Unknown management verb
-				assert(false);
-				return false;
-		}
-	}
+ 	}
 
 	//
 	// Implement template methods from PubIdPlugin.
